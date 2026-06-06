@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>履修登録システム</title>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <div class="page-header">
+    <div class="header-left">
+      <h1>一般・集中講義 履修登録</h1>
+      <div class="meta">2026年度 前期</div>
+      <div class="meta">48A041-6　デザイン学科 3年生　友部 優聖 さん</div>
+      <div class="log-label" style="margin-top:8px;">ログ</div>
+      <div class="log-box" id="log-box">
+        <p id="log-placeholder" style="color:var(--gray-200);">まだ操作がありません</p>
+      </div>
+    </div>
+
+    <div class="header-right-controls">
+      <div class="registration-period">登録期間：4/21（火）- 5/8（金）</div>
+      
+      <button class="my-timetable-btn" onclick="openMyTimetableModal()">
+        <span class="icon">🔖</span> My時間割から追加
+      </button>
+
+      <div class="credits-display" id="credits-display">
+        <span class="credits-item">前期 <strong id="credits-spring">0</strong> 単位</span>
+        <span class="credits-sep">／</span>
+        <span class="credits-item">後期 <strong id="credits-fall">0</strong> 単位</span>
+        <span class="credits-sep">／</span>
+        <span class="credits-item credits-total">計 <strong id="credits-total">0</strong> 単位</span>
+      </div>
+      
+      <div class="semester-control">
+        <div class="toggle-group">
+          <button id="btn-spring" class="toggle-btn active" onclick="setSemester('spring')">前期</button>
+          <button id="btn-fall" class="toggle-btn" onclick="setSemester('fall')">後期</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls-row">
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <!-- 時間割 -->
+  <div class="timetable-wrapper">
+    <div class="time-col">
+      <div class="time-cell">1</div>
+      <div class="time-cell">2</div>
+      <div class="time-cell">3</div>
+      <div class="time-cell">4</div>
+      <div class="time-cell">5</div>
+      <div class="time-cell">6</div>
+    </div>
+    <div class="days-grid" id="days-grid"></div>
+  </div>
+
+  <!-- 時間外授業 -->
+  <div class="extra-section">
+    <div class="section-label">時間外授業</div>
+    <div class="extra-list" id="extra-list">
+      </div>
+  </div>
+
+  <!-- シラバスモーダル -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal" id="modal">
+      <button class="modal-close-icon" onclick="closeModal()">✕</button>
+      <div class="modal-accent" id="modal-accent"></div>
+      <div class="modal-body">
+        <div class="modal-course-name" id="modal-name"></div>
+        <div class="modal-instructor"  id="modal-instructor"></div>
+        <div class="modal-tags"        id="modal-tags"></div>
+        <div class="modal-section-title">授業概要</div>
+        <div class="modal-overview"    id="modal-overview"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-action-btn close-btn"  onclick="closeModal()">閉じる</button>
+        <button class="modal-action-btn delete-btn" id="modal-delete-btn">この授業を取り消す</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 確定ボタン -->
+  <div class="confirm-bar">
+    <button class="confirm-btn" id="confirm-btn" onclick="confirmRegistration()">履修を確定する</button>
+  </div>
+
+  <div class="modal-overlay" id="my-timetable-overlay" onclick="closeMyTimetableModal(event)">
+    <div class="modal" id="my-timetable-modal" style="max-height: 80vh; display: flex; flex-direction: column;">
+      <button class="modal-close-icon" onclick="closeMyTimetableModal()">✕</button>
+      <div class="modal-body" style="overflow-y: auto; padding-bottom: 20px;">
+        <div class="modal-section-title" style="margin-bottom: 15px; font-size: 14px;">外部サイト連携</div>
+        <div class="modal-course-name" style="margin-bottom: 20px;">My時間割リスト</div>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">
+          授業検索システムでストックした授業候補です。
+        </p>
+        
+        <div id="my-timetable-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-action-btn close-btn" onclick="closeMyTimetableModal()">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

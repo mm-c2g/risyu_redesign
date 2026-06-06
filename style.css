@@ -1,0 +1,908 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f7f5f0;
+  --white: #ffffff;
+  --text-main: #2c2c2a;
+  --text-muted: #5f5e5a;
+  --border: #d3d1c7;
+  --gray-50: #f1efe8;
+  --gray-100: #d3d1c7;
+  --gray-200: #b4b2a9;
+  --gray-400: #888780;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --slot-width: 231px;
+  --slot-height: 100px;
+
+  /* カテゴリカラー（カスタマイズ可能） */
+  --cat-major-bg:  #fbeaf0;
+  --cat-major-bd:  #f4c0d1;
+  --cat-major-dot: #eeb0c5;
+  --cat-arts-bg:   #eeedfe;
+  --cat-arts-bd:   #cecbf6;
+  --cat-arts-dot:  #c0b9fe;
+  --cat-pe-bg:     #e6f1fb;
+  --cat-pe-bd:     #b5d4f4;
+  --cat-pe-dot:    #9dc6ef;
+  --cat-lang-bg:   #e1f5ee;
+  --cat-lang-bd:   #9fe1cb;
+  --cat-lang-dot:  #97eed3;
+  --cat-other-bg:  #eaf3de;
+  --cat-other-bd:  #c0dd97;
+  --cat-other-dot: #b0de78;
+  --cat-c6-bg:     #faeeda;
+  --cat-c6-bd:     #fac775;
+  --cat-c6-dot:    #f0c295;
+  --cat-c7-bg:     #fcebeb;
+  --cat-c7-bd:     #f7c1c1;
+  --cat-c7-dot:    #e06c6c;
+}
+
+body {
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  background: var(--bg);
+  color: var(--text-main);
+  min-height: 100vh;
+  padding: 24px 28px 120px;
+  font-size: 14px;
+}
+
+/* ─── ヘッダー ─── */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 16px;
+}
+/* make header a positioning context so we can pin the credits display */
+.page-header { position: relative; }
+.header-left h1 {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  border-bottom: 2.5px solid var(--text-main);
+  padding-bottom: 4px;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+.header-left .meta { font-size: 13px; color: var(--text-muted); margin-bottom: 2px; }
+.registration-period {
+  background: var(--white);
+  border: 1.5px solid var(--text-main);
+  border-radius: var(--radius-md);
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ─── ログ ─── */
+.log-section { margin-bottom: 10px; }
+.log-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+.log-box {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  height: 44px;
+  overflow-y: auto;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-main);
+  width: 600px;
+}
+.log-box p { margin: 0; }
+.log-box::-webkit-scrollbar { width: 4px; }
+.log-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.log-important,
+.credits-total strong {
+  color: #e24b4a;
+  font-weight: 700;
+}
+
+/* ─── ヘッダー右側のコントロール配置 ─── */
+.header-right-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between; /* 上端・下端に要素を配置 */
+  align-self: stretch;            /* 左カラムと同じ高さに伸ばす */
+  gap: 8px;
+}
+
+/* Pin credits display so it stays visible above popovers/modals */
+.credits-display {
+  position: absolute;
+  top: 150px; /* adjust this value to move vertically */
+  right: 400px; /* adjust to align with pink mark */
+  z-index: 500;
+  background: transparent;
+}
+
+/* ★ 登録期間と前後期切り替えの「間」に綺麗に収めつつ高さを出さない工夫 */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;    /* ★ これを足すことで、左側と右側の高さがズレても中央で綺麗に揃います */
+
+}
+
+/* ついでにMy時間割ボタンの上下の余白感を微調整 */
+.my-timetable-btn {
+  width: fit-content;
+  margin: 2px 0;          /* ボタンの上下の余白を少しだけ削る */
+}
+
+/* 登録期間のテキスト位置微調整 */
+.registration-period {
+  margin-bottom: 2px;
+  text-align: right;
+}
+
+/* My時間割ボタンの幅を右側に馴染むように少し調整 */
+.my-timetable-btn {
+  width: fit-content;
+}
+
+/* controls-row がこうなっていれば、3つの要素が均等に配置されます */
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* ★これで両端と中央に分かれます */
+  margin-bottom: 16px;
+}
+
+/* ─── 時間外授業リストのレイアウト ─── */
+.extra-list {
+  display: flex;
+  flex-wrap: wrap; /* カードを横に並べて、入り切らない分は折り返す */
+  gap: 12px;
+  margin-top: 12px;
+  align-items: flex-start;
+}
+
+/* 時間外カード（時間割スロットと同じサイズで適用する） */
+.extra-card.extra-card-slot {
+  position: relative !important; /* 時間割の absolute 指定を解除 */
+  left: auto !important;
+  right: auto !important;
+  width: var(--slot-width) !important; /* 曜日スロットと同じ幅 */
+  height: var(--slot-height) !important; /* 曜日スロットと同じ高さ */
+  margin: 0 !important;
+  flex-shrink: 0 !important; /* グリッド縮小を防止 */
+}
+
+/* 追加ボタンも同じサイズのカードにする */
+.extra-add-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--slot-width);
+  height: var(--slot-height);
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.extra-add-card:hover {
+  background: var(--gray-50);
+  border-color: var(--gray-400);
+}
+
+.extra-add-btn {
+  background: transparent;
+  border: none;
+  color: var(--gray-400);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  pointer-events: none; /* 親のカード全体でクリック判定させるため */
+}
+
+/* ポップオーバーの位置調整 */
+.extra-add-card .popover {
+  top: calc(100% + 8px);
+  left: 0;
+}
+/* 凡例 */
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  position: relative;
+}
+
+.legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid var(--border); /* ★ 共通のグレー枠線にする */
+}
+/* 各カテゴリは背景色（background）のみに指定を変更 */
+.dot-major { background: var(--cat-major-bg); }
+.dot-arts  { background: var(--cat-arts-bg);  }
+.dot-pe    { background: var(--cat-pe-bg);    }
+.dot-lang  { background: var(--cat-lang-bg);  }
+.dot-other { background: var(--cat-other-bg); }
+.dot-c6    { background: var(--cat-c6-bg);    }
+.dot-c7    { background: var(--cat-c7-bg);    }
+
+/* カラーピッカーポップアップ */
+.color-picker-popup {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 200;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  min-width: 200px;
+}
+
+.color-picker-popup.open { display: block; }
+
+.color-picker-title { 
+  font-size: 11px; 
+  color: var(--text-muted); 
+  margin-bottom: 8px; 
+  font-weight: 500; 
+}
+
+.preset-colors {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.preset-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  /* ❌ border: 2px solid transparent; から以下に変更 */
+  border: 1px solid var(--border); /* ★ コマ枠と同じグレーの線をつける */
+  transition: border-color 0.1s, transform 0.1s;
+}
+
+/* ホバーした時は今まで通り少し濃いグレーにして目立たせる */
+.preset-swatch:hover { 
+  transform: scale(1.15); 
+  border-color: var(--gray-400); 
+}
+
+.color-picker-row label { color: var(--text-muted); white-space: nowrap; }
+.color-picker-row input[type="color"] {
+  width: 32px; height: 22px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0 2px;
+}
+
+/* 学期トグル */
+.semester-control 
+{ display: flex; 
+  align-items: center; gap: 
+  10px; font-size: 13px;
+ }
+
+.grade-label { 
+  font-weight: 500; 
+  white-space: nowrap; 
+}
+
+.toggle-group { 
+  display: flex; background: 
+  var(--gray-100);
+   border-radius: 8px; 
+   padding: 2px; gap: 2px;
+   }
+
+.toggle-btn {
+  padding: 5px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.15s;
+  font-weight: 400;
+}
+.toggle-btn.active { background: var(--white); color: var(--text-main); font-weight: 500; }
+
+/* 前後期切り替えモーション */
+@keyframes fade-out-down {
+  from { opacity: 1; transform: translateY(0);    }
+  to   { opacity: 0; transform: translateY(6px);  }
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(6px);  }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+.semester-fade-out {
+  animation: fade-out-down 0.18s ease-in forwards;
+  pointer-events: none;
+}
+.semester-fade-in {
+  animation: fade-in-up 0.25s ease-out forwards;
+}
+
+/* ─── 時間割グリッド ─── */
+.timetable-wrapper { display: flex; gap: 0; margin-bottom: 20px; }
+
+.time-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 31.5px; /* ここを修正（30px + 枠線1.5px分） */
+  flex-shrink: 0;
+  width: 28px;
+}
+
+.time-cell {
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.days-grid { display: flex; gap: 7px; flex: 1; }
+
+.day-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.day-header {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* ─── 曜日ごとの縦コンテナ ─── */
+.day-track {
+  flex: 1;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── 授業スロット ─── */
+.slot {
+  flex-shrink: 0;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.12s;
+  overflow: visible;
+}
+
+/* ★ 全てのスロットの間に、一律で共通のグレー線を引く */
+.slot:not(:first-child) { border-top: 1px solid var(--border); }
+
+/* 空きコマ */
+.slot.empty {
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.slot.empty:hover { background: var(--gray-50); }
+
+.plus-icon {
+  font-size: 20px;
+  color: var(--gray-200);
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+  user-select: none;
+}
+.slot.empty:hover .plus-icon { opacity: 1; }
+
+/* 授業あり */
+.slot.has-course {
+  cursor: pointer;
+  padding: 7px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ★ カテゴリ色は背景色だけにします */
+.slot.major { background: var(--cat-major-bg); }
+.slot.arts  { background: var(--cat-arts-bg);  }
+.slot.pe    { background: var(--cat-pe-bg);    }
+.slot.lang  { background: var(--cat-lang-bg);  }
+.slot.other { background: var(--cat-other-bg); }
+.slot.c6    { background: var(--cat-c6-bg);    }
+.slot.c7    { background: var(--cat-c7-bg);    }
+
+/* 🟢 もし「同じ授業が2コマ連続するときだけは、間のグレー線を消したい」場合は以下を追記 */
+/* .slot.has-course + .slot.has-course { border-top: none; } */
+
+.slot-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.online-icon { font-size: 12px; color: var(--gray-400); line-height: 1; }
+.credits-badge { font-size: 11px; font-weight: 500; color: var(--text-muted); line-height: 1; }
+.course-name {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--text-main);
+  text-align: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.instructor { font-size: 11px; color: var(--text-muted); text-align: center; }
+
+/* ─── ポップオーバー ─── */
+.popover {
+  display: none;
+  position: absolute;
+  top: 4px;
+  left: calc(100% + 8px);
+  z-index: 100;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  min-width: 155px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+.popover.open { display: block; }
+.popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.popover-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1;
+  padding: 0 2px;
+  transition: color 0.1s;
+}
+.popover-close:hover { color: var(--text-main); }
+.popover-list { padding: 4px 0; }
+.popover-item {
+  padding: 7px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: background 0.1s;
+  border-bottom: 1px solid var(--gray-50);
+}
+.popover-item:last-child { border-bottom: none; }
+.popover-item:hover { background: var(--gray-50); }
+
+/* 右端カラムのポップオーバーは左に出す */
+.day-col:nth-last-child(-n+2) .popover {
+  left: auto;
+  right: calc(100% + 8px);
+}
+
+/* ─── 時間外授業 ─── */
+.extra-section { margin-bottom: 24px; }
+.section-label { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+
+.extra-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-left: 28px;
+}
+.extra-row-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: fit-content;
+}
+/* ─── 単位数表示 ─── */
+.credits-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 18px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.credits-item strong {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+  transition: color 0.2s;
+}
+.credits-total strong {
+  color: #e24b4a;
+}
+.credits-sep {
+  color: var(--border);
+}
+@keyframes credits-flash {
+  0%   { color: #e24b4a; transform: scale(1) translateY(0); }
+  40%  { color: #e24b4a; transform: scale(1.25) translateY(-3px); }
+  100% { color: var(--text-main);     transform: scale(1) translateY(0); }
+}
+.credits-item.flash strong {
+  animation: credits-flash 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  display: inline-block;
+}
+
+@keyframes slot-pop-in {
+  0% { transform: scale(0.9) translateY(10px); opacity: 0; }
+  60% { transform: scale(1.02) translateY(-2px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+.slot.just-added {
+  animation: slot-pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  z-index: 10;
+}
+
+/* ─── 時間外授業カード（曜日スロットと完全に同じサイズ・レイアウト）─── */
+.extra-card {
+  width: var(--slot-width) !important;
+  height: var(--slot-height) !important;
+  flex-shrink: 0 !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 7px 8px;
+  position: relative;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+/* 曜日スロットと同じ構造で上書き */
+.extra-card .slot-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.extra-card .credits-badge { font-size: 11px; font-weight: 500; color: var(--text-muted); line-height: 1; position: static; }
+.extra-card .course-name {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--text-main);
+  text-align: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+.extra-card .instructor { font-size: 11px; color: var(--text-muted); text-align: center; display: block; margin-top: 0; }
+
+/* カテゴリ別背景色 */
+.extra-card.major { background: var(--cat-major-bg); }
+.extra-card.arts  { background: var(--cat-arts-bg);  }
+.extra-card.pe    { background: var(--cat-pe-bg);    }
+.extra-card.lang  { background: var(--cat-lang-bg);  }
+.extra-card.other { background: var(--cat-other-bg); }
+.extra-card.c6    { background: var(--cat-c6-bg);    }
+.extra-card.c7    { background: var(--cat-c7-bg);    }
+
+.extra-add-row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  position: relative; /* ★ポップオーバーの配置基準にするため追加 */
+  width: fit-content;
+}
+
+.extra-add-row .popover {
+  top: 0;
+  left: calc(100% + 8px);
+}
+.extra-list > div:nth-child(5n+5) .popover,
+.extra-list > div:nth-child(5n+6) .popover {
+  left: auto;
+  right: calc(100% + 8px);
+}
+
+.extra-add-btn {
+  width: var(--slot-width);
+  height: var(--slot-height);
+  background: var(--white);
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  color: var(--gray-200);
+  transition: border-color 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.extra-add-btn:hover { border-color: var(--gray-400); color: var(--gray-400); }
+
+/* ─── 確定ボタン ─── */
+.confirm-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  padding: 14px 28px;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: none;
+  z-index: 300;
+}
+.confirm-btn {
+  background: var(--white);
+  border: 2px solid var(--text-main);
+  border-radius: var(--radius-lg);
+  padding: 13px 36px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--text-main);
+  box-shadow: 4px 4px 0 var(--text-main);
+  transition: box-shadow 0.1s, transform 0.1s, opacity 0.25s, translate 0.25s;
+  pointer-events: none;
+  opacity: 0;
+  translate: 0 16px;
+}
+.confirm-btn.visible {
+  pointer-events: auto;
+  opacity: 1;
+  translate: 0 0;
+}
+.confirm-btn:hover { box-shadow: 2px 2px 0 var(--text-main); transform: translate(2px,2px); }
+.confirm-btn:active { box-shadow: 0 0 0 var(--text-main); transform: translate(4px,4px); }
+
+/* ─── シラバスモーダル ─── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(44,44,42,0.35);
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  width: 340px;
+  max-width: calc(100vw - 48px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+  overflow: hidden;
+  translate: 0 24px;
+  scale: 0.95;
+  opacity: 0;
+  transition: translate 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              scale 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              opacity 0.3s ease;
+  position: relative;
+}
+
+.modal-close-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: var(--gray-400);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  transition: color 0.15s;
+  z-index: 10;
+}
+.modal-close-icon:hover { color: var(--text-main); }
+
+.modal-overlay.open .modal { 
+  translate: 0 0; 
+  scale: 1;
+  opacity: 1;
+}
+
+/* ─── My時間割モーダル専用スタイル（右からスライドイン） ─── */
+#my-timetable-overlay {
+  background: transparent;
+  pointer-events: none;
+}
+#my-timetable-overlay.open {
+  pointer-events: auto;
+}
+#my-timetable-modal {
+  position: absolute;
+  top: 80px;
+  right: 28px;
+  margin: 0;
+  width: 320px;
+  translate: 120% 0;
+  scale: 1;
+  opacity: 0;
+  transition: translate 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1), opacity 0.4s ease;
+}
+#my-timetable-overlay.open #my-timetable-modal {
+  translate: 0 0;
+  scale: 1;
+  opacity: 1;
+}
+
+.modal-accent { height: 6px; width: 100%; }
+.modal-body { padding: 20px 22px 0; }
+
+.modal-course-name {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.modal-instructor {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+.modal-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.modal-tag {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-weight: 500;
+  background: var(--gray-50);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+.modal-tag.online {
+  background: #e6f1fb;
+  color: #185fa5;
+  border-color: #b5d4f4;
+}
+.modal-section-title {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.modal-overview {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-main);
+  margin-bottom: 20px;
+  padding: 10px 12px;
+  background: var(--gray-50);
+  border-radius: var(--radius-sm);
+}
+.modal-actions {
+  display: flex;
+  border-top: 1px solid var(--border);
+}
+.modal-action-btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.12s;
+}
+.modal-action-btn:hover { background: var(--gray-50); }
+.modal-action-btn.close-btn { color: var(--text-muted); border-right: 1px solid var(--border); }
+.modal-action-btn.delete-btn { color: #e24b4a; }
+.modal-action-btn.delete-btn:hover { background: #fcebeb; }
+
+/* ─── My時間割ボタン ─── */
+.my-timetable-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.my-timetable-btn:hover {
+  background: var(--gray-50);
+  transform: translateY(-1px);
+}
+.my-timetable-btn .icon {
+  font-size: 14px;
+}
+
+/* ─── My時間割リストのアイテム ─── */
+.my-course-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+}
+.my-course-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.my-course-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+.my-course-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.my-course-add-btn {
+  background: var(--cat-pe-bg); /* ちょっと目立つ色（例：体育の青） */
+  border: 1px solid var(--cat-pe-bd);
+  color: #185fa5;
+  padding: 5px 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.my-course-add-btn:hover { opacity: 0.8; }
+.my-course-add-btn:disabled {
+  background: var(--gray-50);
+  border-color: var(--border);
+  color: var(--gray-400);
+  cursor: not-allowed;
+}
