@@ -1,1 +1,0 @@
-# risyu_redesign
