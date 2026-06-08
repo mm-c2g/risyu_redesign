@@ -1,7 +1,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #f7f5f0;
+  --bg: #f9f6ee;
   --white: #ffffff;
   --text-main: #2c2c2a;
   --text-muted: #5f5e5a;
@@ -745,28 +745,219 @@ body {
   opacity: 1;
 }
 
-/* ─── My時間割モーダル専用スタイル（右からスライドイン） ─── */
-#my-timetable-overlay {
-  background: transparent;
+/* ─── My時間割 Lottieパネル ───
+   pannel.json  : 786 × 684 px  (0−28f)
+   class_item.json : 1169 × 266 px (0−10f)
+─────────────────────── */
+
+/* オーバーレイ：パネル外側のクリックで閉じる半透明背景 */
+.lottie-panel-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
   pointer-events: none;
+  background: transparent;
 }
-#my-timetable-overlay.open {
+.lottie-panel-overlay.open {
   pointer-events: auto;
 }
-#my-timetable-modal {
-  position: absolute;
-  top: 80px;
-  right: 28px;
-  margin: 0;
-  width: 320px;
-  translate: 120% 0;
-  scale: 1;
+
+/* パネルルート：画面中央に浮かぶ山型 */
+.lottie-panel-root {
+  /* pannel.json の実対サイズに合わせて指定
+     786px 幅 → 番組が右上から展開するので右寄せに */
+  position: fixed;
+  top: 60px;
+  right: 24px;
+  /* 幅は pannel.json の実対サイズのおよそ半分「コンパクト」設定 */
+  width: 420px;
+  /* 高さは pannel.json のアスペクト比で自動計算:
+     420 × (684 / 786) ≈ 365px */
+  aspect-ratio: 786 / 684;
+  pointer-events: none;
+  z-index: 401;
+  /* 初期は非表示 */
   opacity: 0;
-  transition: translate 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1), opacity 0.4s ease;
+  transform: scale(0.92) translateY(-8px);
+  transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.15);
 }
-#my-timetable-overlay.open #my-timetable-modal {
-  translate: 0 0;
-  scale: 1;
+.lottie-panel-root.open {
+  pointer-events: auto;
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* ① Lottieキャンバス: pannel.json を表示する層 */
+.lottie-pannel-bg {
+  position: absolute;
+  inset: 0;         /* 親ルートと完全に同じサイズ */
+  z-index: 1;
+  pointer-events: none;
+}
+/* Lottie がインジェクトする SVG が親のサイズに追従するように */
+.lottie-pannel-bg > svg {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* ② テキストコンテンツ層: Lottieの上に重ねる */
+.lottie-panel-content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.2s ease 0.05s;
+  /* pannel.json の枠内側にテキストを収めるパディング */
+  padding: 18px 22px 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.lottie-panel-root.content-ready .lottie-panel-content {
+  opacity: 1;
+}
+
+.lottie-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+.lottie-panel-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+.lottie-panel-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--gray-400);
+  padding: 2px 4px;
+  line-height: 1;
+  transition: color 0.15s;
+  font-family: inherit;
+}
+.lottie-panel-close:hover { color: var(--text-main); }
+
+.lottie-panel-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+/* カードリスト: スクロール可能 */
+.lottie-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  flex: 1;
+  /* スクロールバーをシン */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.lottie-items-list::-webkit-scrollbar { width: 3px; }
+.lottie-items-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ─── 授業カード: Lottie枠線 + HTMLテキストの重ね合わせ ───
+   class_item.json : 1169 × 266 px
+   カード幅 = 100%, 高さ = 幅 × (266/1169) ≈ 幅 × 0.2275
+   幅が 376px (420-44px padding) なら 高さ ≈ 85px
+────────────────────── */
+.lc-item {
+  position: relative;
+  width: 100%;
+  /* class_item.json のアスペクト比で高さを自動決定 */
+  aspect-ratio: 1169 / 266;
+  flex-shrink: 0;
+}
+
+/* ① Lottie枠線層 (z-index: 1) */
+.lc-lottie {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.lc-lottie > svg {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* ② テキスト・ボタン層 (z-index: 2) */
+.lc-text {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.lc-item.text-visible .lc-text {
+  opacity: 1;
+}
+
+.lc-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.lc-sem-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 10px;
+  letter-spacing: 0.05em;
+  display: inline-block;
+  width: fit-content;
+  margin-bottom: 1px;
+}
+.lc-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lc-meta {
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.lc-add-btn {
+  background: var(--cat-pe-bg);
+  border: 1px solid var(--cat-pe-bd);
+  color: #185fa5;
+  padding: 5px 12px;
+  border-radius: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 10px;
+  transition: opacity 0.2s, background 0.15s;
+  font-family: inherit;
+}
+.lc-add-btn:hover:not(:disabled) { opacity: 0.8; }
+.lc-add-btn:disabled {
+  background: var(--gray-50);
+  border-color: var(--border);
+  color: var(--gray-400);
+  cursor: not-allowed;
   opacity: 1;
 }
 
@@ -865,7 +1056,7 @@ body {
   font-size: 14px;
 }
 
-/* ─── My時間割リストのアイテム ─── */
+/* ─── 古い .my-course-item 系は引き継ぎ保持少数參照向けに残す─── */
 .my-course-item {
   display: flex;
   align-items: center;
@@ -875,21 +1066,11 @@ body {
   border-radius: var(--radius-sm);
   background: var(--white);
 }
-.my-course-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.my-course-title {
-  font-size: 14px;
-  font-weight: 700;
-}
-.my-course-meta {
-  font-size: 11px;
-  color: var(--text-muted);
-}
+.my-course-info { display: flex; flex-direction: column; gap: 4px; }
+.my-course-title { font-size: 14px; font-weight: 700; }
+.my-course-meta  { font-size: 11px; color: var(--text-muted); }
 .my-course-add-btn {
-  background: var(--cat-pe-bg); /* ちょっと目立つ色（例：体育の青） */
+  background: var(--cat-pe-bg);
   border: 1px solid var(--cat-pe-bd);
   color: #185fa5;
   padding: 5px 12px;

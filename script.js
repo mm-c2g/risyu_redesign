@@ -589,115 +589,220 @@ renderExtraList();
 updateCreditsDisplay();
 
 /* ═══════════════════════════════════════
-   My時間割（外部連携）ロジック
+   My時間割 — Lottieパネルロジック
 ═══════════════════════════════════════ */
 
-// 外部サイトから引っ張ってきた想定のストックデータ（ダミー）
+/* 外部サイトから引っ張ってきた想定のストックデータ */
 const externalMyCourses = [
-  // ★ span を periodLength に修正し、必要な情報を揃えました！
-  { id: 'ext1', name: 'グラフィックデザイン論', instructor: '佐藤', category: 'major', credits: 2, day: 0, periodStart: 3, periodLength: 1, semester: 'spring' },
-  { id: 'ext2', name: '西洋美術史', instructor: '鈴木', category: 'arts', credits: 2, day: 1, periodStart: 2, periodLength: 1, semester: 'spring' },
-  { id: 'ext3', name: 'メディアアート演習', instructor: '高橋', category: 'major', credits: 4, day: 2, periodStart: 4, periodLength: 2, semester: 'fall' },
-  { id: 'ext4', name: '英語コミュニケーション', instructor: 'Smith', category: 'lang', credits: 1, day: 3, periodStart: 1, periodLength: 1, semester: 'fall' }
+  { id: 'ext1', name: 'グラフィックデザイン論',  instructor: '佐藤',  category: 'major', credits: 2, day: 0, periodStart: 3, periodLength: 1, semester: 'spring' },
+  { id: 'ext2', name: '西洋美術史',              instructor: '鈴木',  category: 'arts',  credits: 2, day: 1, periodStart: 2, periodLength: 1, semester: 'spring' },
+  { id: 'ext3', name: 'メディアアート演習',          instructor: '高橋',  category: 'major', credits: 4, day: 2, periodStart: 4, periodLength: 2, semester: 'fall'   },
+  { id: 'ext4', name: '英語コミュニケーション',    instructor: 'Smith', category: 'lang',  credits: 1, day: 3, periodStart: 1, periodLength: 1, semester: 'fall'   },
 ];
 
-// モーダルを開く処理
-function openMyTimetableModal() {
-  renderMyTimetableList();
-  document.getElementById('my-timetable-overlay').classList.add('open');
-}
+/* ─── グローバルな Lottie 状態変数 ─── */
+let pannelAnim        = null;  // pannel.json のインスタンス
+let classItemAnims    = [];    // 各カードの class_item.json インスタンス
+let pannelInitialized = false; // pannel.json がロード済みか
+let staggerTimers     = [];    // クリア用の setTimeout ID集合
 
-// モーダルを閉じる処理
-function closeMyTimetableModal(e) {
-  if (e && e.target !== document.getElementById('my-timetable-overlay')) return;
-  document.getElementById('my-timetable-overlay').classList.remove('open');
-}
+/* ─── pannel.json を初回ロード（ページ内で一度だけ） ─── */
+function initPannelLottie(onReady) {
+  const container = document.getElementById('lottie-pannel-container');
+  if (!container) return;
 
-// リストの描画
-function renderMyTimetableList() {
-  const listContainer = document.getElementById('my-timetable-list');
-  listContainer.innerHTML = '';
+  // 既にインスタンスがあれば即座にコールバックを返す
+  if (pannelAnim) {
+    if (onReady) onReady();
+    return;
+  }
 
-  externalMyCourses.forEach(course => {
-    // 登録キーの生成
-    const courseKey = `${course.semester}-${course.day}-${course.periodStart}`;
-    const isAdded = !!registeredCourses[courseKey];
-
-    const item = document.createElement('div');
-    item.className = 'my-course-item';
-    
-    // 曜日と時限のテキスト化
-    const dayStr = DAYS[course.day];
-    const periodStr = course.periodLength > 1 ? `${course.periodStart}-${course.periodStart + course.periodLength - 1}限` : `${course.periodStart}限`;
-    
-    // 前期・後期の判定
-    const isSpring = course.semester === 'spring';
-    const semLabel = isSpring ? '前期' : '後期';
-    const semBg = isSpring ? '#f3f3f3' : '#f3f3f3';
-    const semColor = isSpring ? '#cb1414' : '#17ba86';
-
-    item.innerHTML = `
-      <div class="my-course-info">
-        <div class="my-course-title" style="display:flex; align-items:center; gap:8px;">
-          <span style="white-space: nowrap; flex-shrink: 0; font-size:10px; font-weight:700; padding:2px 8px; border-radius:12px; background:${semBg}; color:${semColor}; letter-spacing:0.05em;">
-            ${semLabel}
-          </span>
-          ${course.name}
-        </div>
-        <div class="my-course-meta">${dayStr}曜 ${periodStr} / 担当: ${course.instructor}</div>
-      </div>
-      <button type="button" class="my-course-add-btn" ${isAdded ? 'disabled' : ''}>
-        ${isAdded ? '追加済み' : '＋ 履修する'}
-      </button>
-    `;
-
-    // 追加ボタンのクリックイベント
-    if (!isAdded) {
-      const btn = item.querySelector('.my-course-add-btn');
-      btn.onclick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        /* 被りチェック */
-        const targetSemCourses = (course.semester === 'spring' ? [...coursesSpring] : [...coursesFall])
-          .filter(c => !deletedCourseIds.has(c.id));
-        const allCourses = [...targetSemCourses, ...Object.values(registeredCourses).filter(c => c._semester === course.semester)];
-        const existing = allCourses.find(c =>
-          c.day === course.day && c.periodStart <= course.periodStart && c.periodStart + c.periodLength > course.periodStart
-        );
-        if (existing) {
-          if (!confirm(`${DAYS[course.day]}${course.periodStart} には「${existing.name}」が登録されています。\n上書きして「${course.name}」に変更しますか？`)) return;
-          delete registeredCourses[`${course.semester}-${course.day}-${existing.periodStart}`];
-          deletedCourseIds.add(existing.id);
-        }
-
-        const formattedCourse = {
-          ...course,
-          _semester: course.semester,
-          isOnline: false,
-          overview: 'My時間割からインポートされた授業です。'
-        };
-
-        registeredCourses[courseKey] = formattedCourse;
-        justAddedCourseId = course.id;
-        addLog(`・My時間割から ${semLabel} ${dayStr}${course.periodStart} 「${course.name}」を取り込みました。`);
-        
-        // 学期の切り替え、または時間割の再描画
-        if (typeof currentSemester !== 'undefined' && currentSemester !== course.semester) {
-          if (typeof setSemester === 'function') {
-            setSemester(course.semester);
-          }
-        } else {
-          if (typeof renderGrid === 'function') {
-            renderGrid();
-          }
-        }
-
-        if (typeof setChanged === 'function') setChanged(); 
-        renderMyTimetableList(); // ボタンを「追加済み」に更新
-      };
-    }
-
-    listContainer.appendChild(item);
+  pannelAnim = lottie.loadAnimation({
+    container : container,
+    renderer  : 'svg',
+    loop      : false,
+    autoplay  : false,
+    path      : 'pannel.json',
   });
+
+  pannelAnim.addEventListener('DOMLoaded', () => {
+    pannelInitialized = true;
+    if (onReady) onReady();
+  });
+
+  // 展開完了後にカードを量産
+  pannelAnim.addEventListener('complete', () => {
+    spawnCourseCards();
+  });
+}
+
+/* ─── モーダルを開く ─── */
+function openMyTimetableModal() {
+  const overlay = document.getElementById('my-timetable-overlay');
+  const root    = document.getElementById('my-timetable-panel');
+  const list    = document.getElementById('my-timetable-list');
+
+  // 前回のスタガータイマーを全クリア
+  staggerTimers.forEach(id => clearTimeout(id));
+  staggerTimers = [];
+
+  // 前回の class_item インスタンスを破棄
+  classItemAnims.forEach(a => a.destroy());
+  classItemAnims = [];
+
+  // 初期状態にリセット
+  list.innerHTML = '';
+  root.classList.remove('content-ready');
+
+  // オーバーレイとルートを即座に表示（バックグラウンドを先出す）
+  overlay.classList.add('open');
+  root.classList.add('open');
+
+  // pannel.json を初回ロードしてから再生開始
+  initPannelLottie(() => {
+    pannelAnim.goToAndStop(0, true);
+    pannelAnim.play();
+  });
+}
+
+/* ─── モーダルを閉じる ─── */
+function closeMyTimetableModal(e) {
+  // overlay自身へのクリックのみ閉じる（パネル内部のクリックは無視）
+  if (e && e.target !== document.getElementById('my-timetable-overlay')) return;
+
+  const overlay = document.getElementById('my-timetable-overlay');
+  const root    = document.getElementById('my-timetable-panel');
+  overlay.classList.remove('open');
+  root.classList.remove('open', 'content-ready');
+
+  // タイマーとインスタンスのクリア
+  staggerTimers.forEach(id => clearTimeout(id));
+  staggerTimers = [];
+  classItemAnims.forEach(a => a.destroy());
+  classItemAnims = [];
+
+  if (pannelAnim) pannelAnim.goToAndStop(0, true);
+}
+
+/* ─── pannel 展開完了後：授業カードをスタガーで量産 ─── */
+function spawnCourseCards() {
+  const list = document.getElementById('my-timetable-list');
+  const root = document.getElementById('my-timetable-panel');
+  if (!list || !root) return;
+
+  list.innerHTML = '';
+
+  // コンテンツ層をフェードイン
+  root.classList.add('content-ready');
+
+  externalMyCourses.forEach((course, idx) => {
+    const courseKey = `${course.semester}-${course.day}-${course.periodStart}`;
+    const isAdded   = !!registeredCourses[courseKey];
+
+    /* カードルート（position: relative の親） */
+    const item = document.createElement('div');
+    item.className = 'lc-item';
+
+    /* ① Lottie枠線レイヤー（z-index: 1） */
+    const lottieDiv = document.createElement('div');
+    lottieDiv.className = 'lc-lottie';
+    item.appendChild(lottieDiv);
+
+    /* ② テキスト・ボタンレイヤー（z-index: 2） */
+    const isSpring  = course.semester === 'spring';
+    const semLabel  = isSpring ? '前期' : '後期';
+    const semColor  = isSpring ? '#cb1414' : '#17ba86';
+    const dayStr    = DAYS[course.day];
+    const periodStr = course.periodLength > 1
+      ? `${course.periodStart}−${course.periodStart + course.periodLength - 1}限`
+      : `${course.periodStart}限`;
+
+    const textDiv = document.createElement('div');
+    textDiv.className = 'lc-text';
+    textDiv.innerHTML = `
+      <div class="lc-info">
+        <span class="lc-sem-badge" style="background:#f3f3f3;color:${semColor}">${semLabel}</span>
+        <span class="lc-name">${course.name}</span>
+        <span class="lc-meta">${dayStr}曜 ${periodStr} / ${course.instructor}</span>
+      </div>
+      <button type="button" class="lc-add-btn"${isAdded ? ' disabled' : ''}>${isAdded ? '追加済み' : '＋ 履修する'}</button>
+    `;
+    item.appendChild(textDiv);
+    list.appendChild(item);
+
+    /* 100msづつスタガーして class_item.json を起動 */
+    const timerId = setTimeout(() => {
+      const anim = lottie.loadAnimation({
+        container : lottieDiv,
+        renderer  : 'svg',
+        loop      : false,
+        autoplay  : true,
+        path      : 'class_item.json',
+      });
+      classItemAnims.push(anim);
+
+      /* アニメ完了後にテキストをフェードイン
+         class_item.json は 0−9f で Trim Paths 完結、総尺 11f */
+      anim.addEventListener('complete', () => {
+        item.classList.add('text-visible');
+      });
+
+      /* ボタンイベント（未登録の場合のみ） */
+      if (!isAdded) {
+        const btn = textDiv.querySelector('.lc-add-btn');
+        btn.addEventListener('click', ev => {
+          ev.stopPropagation();
+          addFromMyTimetable(course, btn, item);
+        });
+      }
+    }, idx * 120); // 120msスタガー
+
+    staggerTimers.push(timerId);
+  });
+}
+
+/* ─── My時間割から履修登録 ─── */
+function addFromMyTimetable(course, btn, itemEl) {
+  const courseKey = `${course.semester}-${course.day}-${course.periodStart}`;
+  const isSpring  = course.semester === 'spring';
+  const semLabel  = isSpring ? '前期' : '後期';
+  const dayStr    = DAYS[course.day];
+
+  /* 被りチェック */
+  const targetSemCourses = (course.semester === 'spring' ? [...coursesSpring] : [...coursesFall])
+    .filter(c => !deletedCourseIds.has(c.id));
+  const allCourses = [
+    ...targetSemCourses,
+    ...Object.values(registeredCourses).filter(c => c._semester === course.semester),
+  ];
+  const existing = allCourses.find(c =>
+    c.day === course.day &&
+    c.periodStart <= course.periodStart &&
+    c.periodStart + c.periodLength > course.periodStart
+  );
+  if (existing) {
+    if (!confirm(`${dayStr}${course.periodStart} に「${existing.name}」が登録されています。\n上書きして「${course.name}」に変更しますか？`)) return;
+    delete registeredCourses[`${course.semester}-${course.day}-${existing.periodStart}`];
+    deletedCourseIds.add(existing.id);
+  }
+
+  registeredCourses[courseKey] = {
+    ...course,
+    _semester : course.semester,
+    isOnline  : false,
+    overview  : 'My時間割からインポートされた授業です。',
+  };
+  justAddedCourseId = course.id;
+
+  addLog(`・My時間割から ${semLabel} ${dayStr}${course.periodStart} 「${course.name}」を取り込みました。`);
+
+  btn.disabled    = true;
+  btn.textContent = '追加済み';
+
+  if (typeof currentSemester !== 'undefined' && currentSemester !== course.semester) {
+    if (typeof setSemester === 'function') setSemester(course.semester);
+  } else {
+    if (typeof renderGrid === 'function') renderGrid();
+  }
+  if (typeof setChanged === 'function') setChanged();
 }

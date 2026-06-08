@@ -6,6 +6,7 @@
   <title>履修登録システム</title>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 </head>
 <body>
 
@@ -93,20 +94,20 @@
     <button class="confirm-btn" id="confirm-btn" onclick="confirmRegistration()">履修を確定する</button>
   </div>
 
-  <div class="modal-overlay" id="my-timetable-overlay" onclick="closeMyTimetableModal(event)">
-    <div class="modal" id="my-timetable-modal" style="max-height: 80vh; display: flex; flex-direction: column;">
-      <button class="modal-close-icon" onclick="closeMyTimetableModal()">✕</button>
-      <div class="modal-body" style="overflow-y: auto; padding-bottom: 20px;">
-        <div class="modal-section-title" style="margin-bottom: 15px; font-size: 14px;">外部サイト連携</div>
-        <div class="modal-course-name" style="margin-bottom: 20px;">My時間割リスト</div>
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">
-          授業検索システムでストックした授業候補です。
-        </p>
-        
-        <div id="my-timetable-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
-      </div>
-      <div class="modal-actions">
-        <button class="modal-action-btn close-btn" onclick="closeMyTimetableModal()">閉じる</button>
+  <!-- My時間割 Lottieパネル -->
+  <div id="my-timetable-overlay" class="lottie-panel-overlay" onclick="closeMyTimetableModal(event)">
+    <div id="my-timetable-panel" class="lottie-panel-root">
+      <!-- ① Lottie パネル本体（pannel.json） -->
+      <div id="lottie-pannel-container" class="lottie-pannel-bg"></div>
+
+      <!-- ② パネル内コンテンツ -->
+      <div id="lottie-panel-content" class="lottie-panel-content">
+        <div class="lottie-panel-header">
+          <span class="lottie-panel-title">🔖 My時間割リスト</span>
+          <button class="lottie-panel-close" onclick="closeMyTimetableModal()">✕</button>
+        </div>
+        <p class="lottie-panel-desc">授業検索システムでストックした授業候補</p>
+        <div id="my-timetable-list" class="lottie-items-list"></div>
       </div>
     </div>
   </div>
