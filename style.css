@@ -750,7 +750,21 @@ body {
    class_item.json : 1169 × 266 px (0−10f)
 ─────────────────────── */
 
-/* オーバーレイ：パネル外側のクリックで閉じる半透明背景 */
+/* =========================================
+   My時間割 ボタン兼Lottieパネル (pannel.json)
+========================================= */
+
+/* Lottieボタンの当たり判定（ヘッダー内） */
+.my-timetable-btn-anchor {
+  width: 172px;
+  height: 35px;
+  cursor: pointer;
+  position: relative;
+  z-index: 402; /* パネルより前面に出してクリック受付 */
+  margin: 2px 0;
+}
+
+/* パネル外側のクリックで閉じる半透明背景 */
 .lottie-panel-overlay {
   position: fixed;
   inset: 0;
@@ -762,60 +776,94 @@ body {
   pointer-events: auto;
 }
 
-/* パネルルート：画面中央に浮かぶ山型 */
+/* 調整ガイド：大枠パネル（#my-timetable-panel）のサイズと初期位置を調整する場所
+   widthを変えると、モーダル全体の大きさが変わります。
+   heightは width * (684 / 786) の比率に合わせて計算するとLottieが歪みません。 */
 .lottie-panel-root {
-  /* pannel.json の実対サイズに合わせて指定
-     786px 幅 → 番組が右上から展開するので右寄せに */
   position: fixed;
-  top: 60px;
-  right: 24px;
-  /* 幅は pannel.json の実対サイズのおよそ半分「コンパクト」設定 */
-  width: 420px;
-  /* 高さは pannel.json のアスペクト比で自動計算:
-     420 × (684 / 786) ≈ 365px */
-  aspect-ratio: 786 / 684;
+  top: 0;
+  left: 0;
+  width: 650px;       /* 👈 【調整用】パネルの最大幅を変えたい場合はここ数値を変更 */
+  height: 565.65px;   /* 👈 【調整用】幅に合わせて高さを変更 (幅 × 0.8702) */
   pointer-events: none;
   z-index: 401;
-  /* 初期は非表示 */
-  opacity: 0;
-  transform: scale(0.92) translateY(-8px);
-  transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.15);
-}
-.lottie-panel-root.open {
-  pointer-events: auto;
-  opacity: 1;
-  transform: scale(1) translateY(0);
+  opacity: 1; /* 常時表示（最初はヘッダーのボタンとして待機するため） */
+  transform-origin: top left;
+  transition: transform 0.1s linear;
 }
 
-/* ① Lottieキャンバス: pannel.json を表示する層 */
+/* クリック時の拡大・移動トランジション（開く速度を変えたい場合はここ） */
+.lottie-panel-root.is-animating {
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lottie-panel-root.open {
+  pointer-events: auto; /* 開いた時は全体をクリッカブルに */
+}
+
+/* ① Lottieキャンバス (pannel.json自体) */
 .lottie-pannel-bg {
   position: absolute;
-  inset: 0;         /* 親ルートと完全に同じサイズ */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 1;
-  pointer-events: none;
-}
-/* Lottie がインジェクトする SVG が親のサイズに追従するように */
-.lottie-pannel-bg > svg {
-  width: 100% !important;
-  height: 100% !important;
-  display: block;
+  pointer-events: none; /* 👈 Lottieは背景装飾なので、クリックを邪魔しないように none 固定 */
 }
 
-/* ② テキストコンテンツ層: Lottieの上に重ねる */
-.lottie-panel-content {
-  position: absolute;
-  inset: 0;
+.lottie-pannel-bg svg,
+.lc-lottie svg {
+  width: 100% !important;
+  height: 100% !important;
+  /* Lottieの内部計算を破壊する transform:none は使用しません */
+}
+
+/* テキスト・操作エリアをがちがちにCSSで固定 */
+.lottie-card-text-content {
+  position: relative;
   z-index: 2;
-  opacity: 0;
-  transition: opacity 0.2s ease 0.05s;
-  /* pannel.json の枠内側にテキストを収めるパディング */
-  padding: 18px 22px 20px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 35px; /* 👈 左右のパディングを少し広げて、AEの線の内側に綺麗に文字が乗るように調整 */
+  box-sizing: border-box;
+}
+
+/* 授業カード内のバッジや文字の微調整 */
+.lottie-card-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-main);
+  margin-right: 12px;
+}
+
+/* ② テキストコンテンツ層（パネル内の文字領域）
+   調整ガイド：パネル中心の文字領域の位置と大きさを調整する場所
+   Lottieパネルが画面中央に描画されるため、コンテナから大幅にpaddingを取って内側に文字を寄せています。 */
+.lottie-panel-content {
+  position: relative;
+  z-index: 2; /* 👈 Lottie(z-index:1)の上に重ねる */
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* 初期状態ではクリック不可 */
+  
+  /* 👈 【調整用】文字全体の位置を上下左右に動かしたい場合は、ここのpadding数値を微調整してください。
+     上 120px, 左右 140px, 下(今回は未指定ですが必要に応じて) 取っています。
+     例: padding: 130px 150px 0 150px; */
+  padding: 120px 140px; 
+  
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
 .lottie-panel-root.content-ready .lottie-panel-content {
   opacity: 1;
+  pointer-events: auto; /* 👈 開いた後は文字やボタンがクリック可能になるように auto 固定 */
 }
 
 .lottie-panel-header {
@@ -866,23 +914,29 @@ body {
 
 /* ─── 授業カード: Lottie枠線 + HTMLテキストの重ね合わせ ───
    class_item.json : 1169 × 266 px
-   カード幅 = 100%, 高さ = 幅 × (266/1169) ≈ 幅 × 0.2275
-   幅が 376px (420-44px padding) なら 高さ ≈ 85px
 ────────────────────── */
+
+/* 調整ガイド：授業カード（.lc-item）の縦幅・横幅を調整する場所 */
 .lc-item {
   position: relative;
-  width: 100%;
-  /* class_item.json のアスペクト比で高さを自動決定 */
+  /* 👈 【調整用】カードの横幅を変えたい場合 (現在は親要素に対して100%) */
+  width: 100%; 
+  /* 👈 【調整用】カードの縦幅を変えたい場合はアスペクト比かheightで調整します。
+     class_item.jsonの実寸(1169x266)を維持するなら 1169 / 266 のままが綺麗です。
+     もし任意の高さで固定したい場合は、 aspect-ratio を消して height: 90px; 等にしてください。 */
   aspect-ratio: 1169 / 266;
   flex-shrink: 0;
 }
 
-/* ① Lottie枠線層 (z-index: 1) */
+/* ① 授業カード背景：Lottie枠線層 (z-index: 1) */
 .lc-lottie {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 1;
-  pointer-events: none;
+  pointer-events: none; /* 👈 Lottie枠線はクリックを邪魔しない背景装飾として none 固定 */
 }
 .lc-lottie > svg {
   width: 100% !important;
@@ -890,17 +944,24 @@ body {
   display: block;
 }
 
-/* ② テキスト・ボタン層 (z-index: 2) */
+/* ② 授業カード手前：テキスト・ボタン層 (z-index: 2) */
+/* 調整ガイド：カード内の文字を右や左に寄せるための padding（内側余白）の場所 */
 .lc-text {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
+  position: relative;
+  z-index: 2; /* 👈 Lottie(z-index:1)の上に確実に文字を重ねる */
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  
+  /* 👈 【調整用】Lottieの黒い線に文字が被らないよう、左右の余白をここで微調整します。
+     例: padding: 0 30px; (上下は0、左右は30px開ける) */
+  padding: 0 20px; 
+  
   opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: auto; /* 👈 文字やボタンはクリックできるように auto 固定 */
 }
 .lc-item.text-visible .lc-text {
   opacity: 1;
