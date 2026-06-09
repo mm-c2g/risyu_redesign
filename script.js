@@ -676,149 +676,52 @@ function updateLottiePosition() {
 }
 
 /* ─── モーダルを開く（クリック時） ─── */
-// script.js の openMyTimetableModal 関数をこれに置き換え
 function openMyTimetableModal() {
   const overlay = document.getElementById('my-timetable-overlay');
-  const content = document.getElementById('lottie-panel-content');
-  
-  overlay.classList.add('active');
-  content.classList.remove('show');
-  
-  if (!pannelInstance) {
-    pannelInstance = lottie.loadAnimation({
-      container: document.getElementById('lottie-pannel-container'),
-      renderer: 'svg',
-      loop: false,
-      autoplay: false,
-      path: 'pannel.json',
-      rendererSettings: {
-        preserveAspectRatio: 'none' // 👈 パネルの箱（786x684）に100%ぴったり変形してフィットさせる魔法
-      }
-    });
-    
-    pannelInstance.addEventListener('DOMLoaded', () => {
-      pannelInstance.play();
-    });
-  } else {
-    pannelInstance.goToAndPlay(0, true);
-  }
-  
-  setTimeout(() => {
-    content.classList.add('show');
-    renderMyTimetableList();
-  }, 600); // 👈 動画のテンポに合わせて出現を少し早めたよ（800ms → 600ms）
+  overlay.classList.add('open');
+  renderMyTimetableList();
 }
 
-// script.js の renderMyTimetableList 関数の該当部分（forEachの中のLottieロード部分）をこれに置き換え
 function renderMyTimetableList() {
-  const listContainer = document.getElementById('lottie-my-timetable-list');
+  const listContainer = document.getElementById('my-timetable-list');
   listContainer.innerHTML = '';
-  
-  classItemInstances.forEach(ins => ins.destroy());
-  classItemInstances = [];
-  
+
   const availableCourses = externalMyCourses.filter(c => !deletedCourseIds.has(c.id));
-  
+
   if (availableCourses.length === 0) {
     listContainer.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:13px; margin-top:20px;">候補の授業はありません。</p>';
     return;
   }
-  
-  availableCourses.forEach((course, index) => {
-    const card = document.createElement('div');
-    card.className = 'lottie-card-item';
-    
+
+  availableCourses.forEach((course) => {
     const cat = CATEGORIES.find(item => item.id === course.category) || { label: '他', id: 'other' };
-    const isAdded = registeredCourses[`${course.semester}-${course.day}-${course.periodStart}`]?.id === course.id;
-    
+    const courseKey = `${course.semester}-${course.day}-${course.periodStart}`;
+    const isAdded = registeredCourses[courseKey]?.id === course.id;
+    const semLabel = course.semester === 'spring' ? '前期' : '後期';
+    const dayStr = DAYS[course.day];
+
+    const card = document.createElement('div');
+    card.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:var(--gray-50); border-radius:var(--radius-sm); gap:12px;';
     card.innerHTML = `
-      <div class="lottie-card-bg" id="lottie-card-bg-${course.id}"></div>
-      <div class="lottie-card-text-content">
-        <div class="lottie-card-info-left">
-          <span class="lottie-card-badge ${cat.id}">${cat.label}</span>
-          <span class="lottie-card-name">${course.name}</span>
-          <span class="lottie-card-meta">${DAYS[course.day]}曜 ${course.periodStart}限 / ${course.instructor}</span>
-        </div>
-        <button class="lottie-card-btn ${isAdded ? 'added' : ''}" 
-                ${isAdded ? 'disabled' : ''} 
-                onclick="addCourseFromMyTimetable('${course.id}', this)">
-          ${isAdded ? '追加済み' : '＋ 履修する'}
-        </button>
+      <div style="display:flex; flex-direction:column; gap:3px;">
+        <span style="font-size:11px; color:var(--text-muted);">${semLabel} ${dayStr}曜 ${course.periodStart}限</span>
+        <span style="font-size:13px; font-weight:500;">${course.name}</span>
+        <span style="font-size:11px; color:var(--text-muted);">${course.instructor} / ${course.credits}単位</span>
       </div>
+      <button class="lottie-card-btn ${isAdded ? 'added' : ''}"
+              ${isAdded ? 'disabled' : ''}
+              onclick="addCourseFromMyTimetable('${course.id}', this)">
+        ${isAdded ? '追加済み' : '＋ 履修する'}
+      </button>
     `;
-    
     listContainer.appendChild(card);
-    
-    setTimeout(() => {
-      card.classList.add('show');
-      
-      const anim = lottie.loadAnimation({
-        container: document.getElementById(`lottie-card-bg-${course.id}`),
-        renderer: 'svg',
-        loop: false,
-        autoplay: true,
-        path: 'class_item.json',
-        rendererSettings: {
-          preserveAspectRatio: 'none' // 👈 授業カードの箱（横幅100% x 高さ90px）に100%綺麗に引き伸ばしてフィットさせる魔法
-        }
-      });
-      classItemInstances.push(anim);
-      
-    }, index * 150);
   });
 }
 
-  // 閉じる処理が走っていればキャンセル
-  if (root.closeTimeout) {
-    clearTimeout(root.closeTimeout);
-    root.closeTimeout = null;
-  }
-
-  // 前回のインスタンス・タイマーを破棄
-  staggerTimers.forEach(id => clearTimeout(id));
-  staggerTimers = [];
-  classItemAnims.forEach(a => a.destroy());
-  classItemAnims = [];
-
-  list.innerHTML = '';
-  root.classList.remove('content-ready');
-  
-  overlay.classList.add('open');
-  root.classList.add('open');
-  
-  // is-animating クラスを付与し、中央へ CSS Transform トランジション（1.2s）
-  // わずかな遅延を入れてトランジションを確実に効かせる
-  requestAnimationFrame(() => {
-    root.classList.add('is-animating');
-    // 画面中央へ
-    root.style.transform = `translate(calc(50vw - 325px), calc(50vh - 282.82px)) scale(1)`;
-    
-    // 同時に Lottie のアニメーション（展開）を開始
-    if (pannelAnim) {
-      pannelAnim.setDirection(1); // 正再生
-      pannelAnim.goToAndStop(0, true);
-      pannelAnim.play();
-    }
-  });
-
-/* ─── モーダルを閉じる ─── */
 function closeMyTimetableModal(e) {
-  // オーバーレイ自身、または「✕」ボタンクリック時のみ
-  if (e && e.target !== document.getElementById('my-timetable-overlay') && !e.target.closest('.lottie-panel-close')) return;
-
-  const overlay = document.getElementById('my-timetable-overlay');
-  const root    = document.getElementById('my-timetable-panel');
+  if (e && e.target !== document.getElementById('my-timetable-overlay')) return;
   
-  overlay.classList.remove('open');
-  root.classList.remove('content-ready');
-
-  // タイマーとインスタンスのクリア
-  staggerTimers.forEach(id => clearTimeout(id));
-  staggerTimers = [];
-  classItemAnims.forEach(a => a.destroy());
-  classItemAnims = [];
-
-  // 閉じるアニメーション
+  const root = document.getElementById('my-timetable-overlay');
   root.classList.add('is-animating');
   
   // アンカーボタンの位置へ戻る（CSS Transition 1.2s）
@@ -831,6 +734,7 @@ function closeMyTimetableModal(e) {
   }
 
   // 同時に Lottie のアニメーションを逆再生（収縮）
+  const pannelAnim = lottieInstance; // 仮の参照
   if (pannelAnim) {
     pannelAnim.setDirection(-1);
     pannelAnim.play();
@@ -846,83 +750,6 @@ function closeMyTimetableModal(e) {
   }, 1200);
 }
 
-/* ─── pannel 展開完了後：授業カードをスタガーで量産 ─── */
-function spawnCourseCards() {
-  const list = document.getElementById('my-timetable-list');
-  const root = document.getElementById('my-timetable-panel');
-  if (!list || !root) return;
-
-  list.innerHTML = '';
-
-  // コンテンツ層をフェードイン
-  root.classList.add('content-ready');
-
-  externalMyCourses.forEach((course, idx) => {
-    const courseKey = `${course.semester}-${course.day}-${course.periodStart}`;
-    const isAdded   = !!registeredCourses[courseKey];
-
-    /* カードルート（position: relative の親） */
-    const item = document.createElement('div');
-    item.className = 'lc-item';
-
-    /* ① Lottie枠線レイヤー（z-index: 1） */
-    const lottieDiv = document.createElement('div');
-    lottieDiv.className = 'lc-lottie';
-    item.appendChild(lottieDiv);
-
-    /* ② テキスト・ボタンレイヤー（z-index: 2） */
-    const isSpring  = course.semester === 'spring';
-    const semLabel  = isSpring ? '前期' : '後期';
-    const semColor  = isSpring ? '#cb1414' : '#17ba86';
-    const dayStr    = DAYS[course.day];
-    const periodStr = course.periodLength > 1
-      ? `${course.periodStart}−${course.periodStart + course.periodLength - 1}限`
-      : `${course.periodStart}限`;
-
-    const textDiv = document.createElement('div');
-    textDiv.className = 'lc-text';
-    textDiv.innerHTML = `
-      <div class="lc-info">
-        <span class="lc-sem-badge" style="background:#f3f3f3;color:${semColor}">${semLabel}</span>
-        <span class="lc-name">${course.name}</span>
-        <span class="lc-meta">${dayStr}曜 ${periodStr} / ${course.instructor}</span>
-      </div>
-      <button type="button" class="lc-add-btn"${isAdded ? ' disabled' : ''}>${isAdded ? '追加済み' : '＋ 履修する'}</button>
-    `;
-    item.appendChild(textDiv);
-    list.appendChild(item);
-
-    /* 100msづつスタガーして class_item.json を起動 */
-    const timerId = setTimeout(() => {
-      const anim = lottie.loadAnimation({
-        container: lottieDiv,
-        renderer : 'svg',
-        loop     : false,
-        autoplay : true,
-        path     : 'class_item.json',
-        rendererSettings: { preserveAspectRatio: 'none' }
-      });
-      classItemAnims.push(anim);
-
-      /* アニメ完了後にテキストをフェードイン
-         class_item.json は 0−9f で Trim Paths 完結、総尺 11f */
-      anim.addEventListener('complete', () => {
-        item.classList.add('text-visible');
-      });
-
-      /* ボタンイベント（未登録の場合のみ） */
-      if (!isAdded) {
-        const btn = textDiv.querySelector('.lc-add-btn');
-        btn.addEventListener('click', ev => {
-          ev.stopPropagation();
-          addFromMyTimetable(course, btn, item);
-        });
-      }
-    }, idx * 120); // 120msスタガー
-
-    staggerTimers.push(timerId);
-  });
-}
 
 /* ─── My時間割から履修登録 ─── */
 function addFromMyTimetable(course, btn, itemEl) {

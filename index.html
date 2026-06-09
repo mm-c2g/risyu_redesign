@@ -24,7 +24,9 @@
 
     <div class="header-right-controls">
       <div class="registration-period">登録期間：4/21（火）- 5/8（金）</div>
-      <div id="my-timetable-btn-anchor" class="my-timetable-btn-anchor" onclick="openMyTimetableModal()"></div>
+      <button class="my-timetable-btn" onclick="openMyTimetableModal()">
+        <span class="icon">🔖</span> My時間割から追加
+      </button>
 
       <div class="credits-display" id="credits-display">
         <span class="credits-item">前期 <strong id="credits-spring">0</strong> 単位</span>
@@ -91,20 +93,20 @@
     <button class="confirm-btn" id="confirm-btn" onclick="confirmRegistration()">履修を確定する</button>
   </div>
 
-  <!-- My時間割 Lottieパネル -->
-  <div id="my-timetable-overlay" class="lottie-panel-overlay" onclick="closeMyTimetableModal(event)">
-    <div id="my-timetable-panel" class="lottie-panel-root">
-      <!-- ① Lottie パネル本体（pannel.json） -->
-      <div id="lottie-pannel-container" class="lottie-pannel-bg"></div>
-
-      <!-- ② パネル内コンテンツ -->
-      <div id="lottie-panel-content" class="lottie-panel-content">
-        <div class="lottie-panel-header">
-          <span class="lottie-panel-title">🔖 My時間割リスト</span>
-          <button class="lottie-panel-close" onclick="closeMyTimetableModal()">✕</button>
-        </div>
-        <p class="lottie-panel-desc">授業検索システムでストックした授業候補</p>
-        <div id="my-timetable-list" class="lottie-items-list"></div>
+  <!-- My時間割モーダル -->
+  <div class="modal-overlay" id="my-timetable-overlay" onclick="closeMyTimetableModal(event)">
+    <div class="modal" id="my-timetable-modal" style="max-height:80vh; display:flex; flex-direction:column;">
+      <button class="modal-close-icon" onclick="closeMyTimetableModal()">✕</button>
+      <div class="modal-body" style="overflow-y:auto; padding-bottom:20px;">
+        <div class="modal-section-title" style="margin-bottom:15px; font-size:14px;">外部サイト連携</div>
+        <div class="modal-course-name" style="margin-bottom:20px;">My時間割リスト</div>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">
+          授業検索システムでストックした授業候補です。
+        </p>
+        <div id="my-timetable-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-action-btn close-btn" onclick="closeMyTimetableModal()">閉じる</button>
       </div>
     </div>
   </div>

@@ -1,4 +1,10 @@
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 :root {
   --bg: #f9f6ee;
@@ -17,27 +23,27 @@
   --slot-height: 100px;
 
   /* カテゴリカラー（カスタマイズ可能） */
-  --cat-major-bg:  #fbeaf0;
-  --cat-major-bd:  #f4c0d1;
+  --cat-major-bg: #fbeaf0;
+  --cat-major-bd: #f4c0d1;
   --cat-major-dot: #eeb0c5;
-  --cat-arts-bg:   #eeedfe;
-  --cat-arts-bd:   #cecbf6;
-  --cat-arts-dot:  #c0b9fe;
-  --cat-pe-bg:     #e6f1fb;
-  --cat-pe-bd:     #b5d4f4;
-  --cat-pe-dot:    #9dc6ef;
-  --cat-lang-bg:   #e1f5ee;
-  --cat-lang-bd:   #9fe1cb;
-  --cat-lang-dot:  #97eed3;
-  --cat-other-bg:  #eaf3de;
-  --cat-other-bd:  #c0dd97;
+  --cat-arts-bg: #eeedfe;
+  --cat-arts-bd: #cecbf6;
+  --cat-arts-dot: #c0b9fe;
+  --cat-pe-bg: #e6f1fb;
+  --cat-pe-bd: #b5d4f4;
+  --cat-pe-dot: #9dc6ef;
+  --cat-lang-bg: #e1f5ee;
+  --cat-lang-bd: #9fe1cb;
+  --cat-lang-dot: #97eed3;
+  --cat-other-bg: #eaf3de;
+  --cat-other-bd: #c0dd97;
   --cat-other-dot: #b0de78;
-  --cat-c6-bg:     #faeeda;
-  --cat-c6-bd:     #fac775;
-  --cat-c6-dot:    #f0c295;
-  --cat-c7-bg:     #fcebeb;
-  --cat-c7-bd:     #f7c1c1;
-  --cat-c7-dot:    #e06c6c;
+  --cat-c6-bg: #faeeda;
+  --cat-c6-bd: #fac775;
+  --cat-c6-dot: #f0c295;
+  --cat-c7-bg: #fcebeb;
+  --cat-c7-bd: #f7c1c1;
+  --cat-c7-dot: #e06c6c;
 }
 
 body {
@@ -57,8 +63,12 @@ body {
   margin-bottom: 12px;
   gap: 16px;
 }
+
 /* make header a positioning context so we can pin the credits display */
-.page-header { position: relative; }
+.page-header {
+  position: relative;
+}
+
 .header-left h1 {
   font-size: 26px;
   font-weight: 700;
@@ -69,7 +79,13 @@ body {
   display: inline-block;
   margin-bottom: 6px;
 }
-.header-left .meta { font-size: 13px; color: var(--text-muted); margin-bottom: 2px; }
+
+.header-left .meta {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
 .registration-period {
   background: var(--white);
   border: 1.5px solid var(--text-main);
@@ -81,8 +97,16 @@ body {
 }
 
 /* ─── ログ ─── */
-.log-section { margin-bottom: 10px; }
-.log-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+.log-section {
+  margin-bottom: 10px;
+}
+
+.log-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
 .log-box {
   background: var(--white);
   border: 1px solid var(--border);
@@ -95,9 +119,19 @@ body {
   color: var(--text-main);
   width: 600px;
 }
-.log-box p { margin: 0; }
-.log-box::-webkit-scrollbar { width: 4px; }
-.log-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.log-box p {
+  margin: 0;
+}
+
+.log-box::-webkit-scrollbar {
+  width: 4px;
+}
+
+.log-box::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
 
 .log-important,
 .credits-total strong {
@@ -110,16 +144,20 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  justify-content: space-between; /* 上端・下端に要素を配置 */
-  align-self: stretch;            /* 左カラムと同じ高さに伸ばす */
+  justify-content: space-between;
+  /* 上端・下端に要素を配置 */
+  align-self: stretch;
+  /* 左カラムと同じ高さに伸ばす */
   gap: 8px;
 }
 
 /* Pin credits display so it stays visible above popovers/modals */
 .credits-display {
   position: absolute;
-  top: 150px; /* adjust this value to move vertically */
-  right: 400px; /* adjust to align with pink mark */
+  top: 150px;
+  /* adjust this value to move vertically */
+  right: 400px;
+  /* adjust to align with pink mark */
   z-index: 500;
   background: transparent;
 }
@@ -128,14 +166,16 @@ body {
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;    /* ★ これを足すことで、左側と右側の高さがズレても中央で綺麗に揃います */
+  align-items: flex-start;
+  /* ★ これを足すことで、左側と右側の高さがズレても中央で綺麗に揃います */
 
 }
 
 /* ついでにMy時間割ボタンの上下の余白感を微調整 */
-.my-timetable-btn {
+.my-timetable-btn-anchor {
   width: fit-content;
-  margin: 2px 0;          /* ボタンの上下の余白を少しだけ削る */
+  margin: 2px 0;
+  /* ボタンの上下の余白を少しだけ削る */
 }
 
 /* 登録期間のテキスト位置微調整 */
@@ -144,23 +184,20 @@ body {
   text-align: right;
 }
 
-/* My時間割ボタンの幅を右側に馴染むように少し調整 */
-.my-timetable-btn {
-  width: fit-content;
-}
-
 /* controls-row がこうなっていれば、3つの要素が均等に配置されます */
 .controls-row {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* ★これで両端と中央に分かれます */
+  justify-content: space-between;
+  /* ★これで両端と中央に分かれます */
   margin-bottom: 16px;
 }
 
 /* ─── 時間外授業リストのレイアウト ─── */
 .extra-list {
   display: flex;
-  flex-wrap: wrap; /* カードを横に並べて、入り切らない分は折り返す */
+  flex-wrap: wrap;
+  /* カードを横に並べて、入り切らない分は折り返す */
   gap: 12px;
   margin-top: 12px;
   align-items: flex-start;
@@ -168,13 +205,17 @@ body {
 
 /* 時間外カード（時間割スロットと同じサイズで適用する） */
 .extra-card.extra-card-slot {
-  position: relative !important; /* 時間割の absolute 指定を解除 */
+  position: relative !important;
+  /* 時間割の absolute 指定を解除 */
   left: auto !important;
   right: auto !important;
-  width: var(--slot-width) !important; /* 曜日スロットと同じ幅 */
-  height: var(--slot-height) !important; /* 曜日スロットと同じ高さ */
+  width: var(--slot-width) !important;
+  /* 曜日スロットと同じ幅 */
+  height: var(--slot-height) !important;
+  /* 曜日スロットと同じ高さ */
   margin: 0 !important;
-  flex-shrink: 0 !important; /* グリッド縮小を防止 */
+  flex-shrink: 0 !important;
+  /* グリッド縮小を防止 */
 }
 
 /* 追加ボタンも同じサイズのカードにする */
@@ -191,6 +232,7 @@ body {
   cursor: pointer;
   transition: all 0.2s;
 }
+
 .extra-add-card:hover {
   background: var(--gray-50);
   border-color: var(--gray-400);
@@ -204,7 +246,8 @@ body {
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
-  pointer-events: none; /* 親のカード全体でクリック判定させるため */
+  pointer-events: none;
+  /* 親のカード全体でクリック判定させるため */
 }
 
 /* ポップオーバーの位置調整 */
@@ -212,6 +255,7 @@ body {
   top: calc(100% + 8px);
   left: 0;
 }
+
 /* 凡例 */
 .legend {
   display: flex;
@@ -221,6 +265,7 @@ body {
   font-size: 12px;
   color: var(--text-muted);
 }
+
 .legend-item {
   display: flex;
   align-items: center;
@@ -234,16 +279,38 @@ body {
   height: 14px;
   border-radius: 50%;
   flex-shrink: 0;
-  border: 1px solid var(--border); /* ★ 共通のグレー枠線にする */
+  border: 1px solid var(--border);
+  /* ★ 共通のグレー枠線にする */
 }
+
 /* 各カテゴリは背景色（background）のみに指定を変更 */
-.dot-major { background: var(--cat-major-bg); }
-.dot-arts  { background: var(--cat-arts-bg);  }
-.dot-pe    { background: var(--cat-pe-bg);    }
-.dot-lang  { background: var(--cat-lang-bg);  }
-.dot-other { background: var(--cat-other-bg); }
-.dot-c6    { background: var(--cat-c6-bg);    }
-.dot-c7    { background: var(--cat-c7-bg);    }
+.dot-major {
+  background: var(--cat-major-bg);
+}
+
+.dot-arts {
+  background: var(--cat-arts-bg);
+}
+
+.dot-pe {
+  background: var(--cat-pe-bg);
+}
+
+.dot-lang {
+  background: var(--cat-lang-bg);
+}
+
+.dot-other {
+  background: var(--cat-other-bg);
+}
+
+.dot-c6 {
+  background: var(--cat-c6-bg);
+}
+
+.dot-c7 {
+  background: var(--cat-c7-bg);
+}
 
 /* カラーピッカーポップアップ */
 .color-picker-popup {
@@ -256,17 +323,19 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 10px 12px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   min-width: 200px;
 }
 
-.color-picker-popup.open { display: block; }
+.color-picker-popup.open {
+  display: block;
+}
 
-.color-picker-title { 
-  font-size: 11px; 
-  color: var(--text-muted); 
-  margin-bottom: 8px; 
-  font-weight: 500; 
+.color-picker-title {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-weight: 500;
 }
 
 .preset-colors {
@@ -282,19 +351,25 @@ body {
   border-radius: 50%;
   cursor: pointer;
   /* ❌ border: 2px solid transparent; から以下に変更 */
-  border: 1px solid var(--border); /* ★ コマ枠と同じグレーの線をつける */
+  border: 1px solid var(--border);
+  /* ★ コマ枠と同じグレーの線をつける */
   transition: border-color 0.1s, transform 0.1s;
 }
 
 /* ホバーした時は今まで通り少し濃いグレーにして目立たせる */
-.preset-swatch:hover { 
-  transform: scale(1.15); 
-  border-color: var(--gray-400); 
+.preset-swatch:hover {
+  transform: scale(1.15);
+  border-color: var(--gray-400);
 }
 
-.color-picker-row label { color: var(--text-muted); white-space: nowrap; }
+.color-picker-row label {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
 .color-picker-row input[type="color"] {
-  width: 32px; height: 22px;
+  width: 32px;
+  height: 22px;
   border: 1px solid var(--border);
   border-radius: 4px;
   cursor: pointer;
@@ -302,23 +377,27 @@ body {
 }
 
 /* 学期トグル */
-.semester-control 
-{ display: flex; 
-  align-items: center; gap: 
-  10px; font-size: 13px;
- }
-
-.grade-label { 
-  font-weight: 500; 
-  white-space: nowrap; 
+.semester-control {
+  display: flex;
+  align-items: center;
+  gap:
+    10px;
+  font-size: 13px;
 }
 
-.toggle-group { 
-  display: flex; background: 
-  var(--gray-100);
-   border-radius: 8px; 
-   padding: 2px; gap: 2px;
-   }
+.grade-label {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.toggle-group {
+  display: flex;
+  background:
+    var(--gray-100);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+}
 
 .toggle-btn {
   padding: 5px 14px;
@@ -332,33 +411,60 @@ body {
   transition: all 0.15s;
   font-weight: 400;
 }
-.toggle-btn.active { background: var(--white); color: var(--text-main); font-weight: 500; }
+
+.toggle-btn.active {
+  background: var(--white);
+  color: var(--text-main);
+  font-weight: 500;
+}
 
 /* 前後期切り替えモーション */
 @keyframes fade-out-down {
-  from { opacity: 1; transform: translateY(0);    }
-  to   { opacity: 0; transform: translateY(6px);  }
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(6px);
+  }
 }
+
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(6px);  }
-  to   { opacity: 1; transform: translateY(0);    }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 .semester-fade-out {
   animation: fade-out-down 0.18s ease-in forwards;
   pointer-events: none;
 }
+
 .semester-fade-in {
   animation: fade-in-up 0.25s ease-out forwards;
 }
 
 /* ─── 時間割グリッド ─── */
-.timetable-wrapper { display: flex; gap: 0; margin-bottom: 20px; }
+.timetable-wrapper {
+  display: flex;
+  gap: 0;
+  margin-bottom: 20px;
+}
 
 .time-col {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 31.5px; /* ここを修正（30px + 枠線1.5px分） */
+  padding-top: 31.5px;
+  /* ここを修正（30px + 枠線1.5px分） */
   flex-shrink: 0;
   width: 28px;
 }
@@ -372,7 +478,11 @@ body {
   color: var(--text-muted);
 }
 
-.days-grid { display: flex; gap: 7px; flex: 1; }
+.days-grid {
+  display: flex;
+  gap: 7px;
+  flex: 1;
+}
 
 .day-col {
   flex: 1;
@@ -380,8 +490,9 @@ body {
   flex-direction: column;
   min-width: 0;
 }
+
 .day-header {
-  height: 30px;
+  height: 35px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -410,7 +521,9 @@ body {
 }
 
 /* ★ 全てのスロットの間に、一律で共通のグレー線を引く */
-.slot:not(:first-child) { border-top: 1px solid var(--border); }
+.slot:not(:first-child) {
+  border-top: 1px solid var(--border);
+}
 
 /* 空きコマ */
 .slot.empty {
@@ -419,7 +532,10 @@ body {
   align-items: center;
   justify-content: center;
 }
-.slot.empty:hover { background: var(--gray-50); }
+
+.slot.empty:hover {
+  background: var(--gray-50);
+}
 
 .plus-icon {
   font-size: 20px;
@@ -429,7 +545,10 @@ body {
   pointer-events: none;
   user-select: none;
 }
-.slot.empty:hover .plus-icon { opacity: 1; }
+
+.slot.empty:hover .plus-icon {
+  opacity: 1;
+}
 
 /* 授業あり */
 .slot.has-course {
@@ -441,20 +560,56 @@ body {
 }
 
 /* ★ カテゴリ色は背景色だけにします */
-.slot.major { background: var(--cat-major-bg); }
-.slot.arts  { background: var(--cat-arts-bg);  }
-.slot.pe    { background: var(--cat-pe-bg);    }
-.slot.lang  { background: var(--cat-lang-bg);  }
-.slot.other { background: var(--cat-other-bg); }
-.slot.c6    { background: var(--cat-c6-bg);    }
-.slot.c7    { background: var(--cat-c7-bg);    }
+.slot.major {
+  background: var(--cat-major-bg);
+}
+
+.slot.arts {
+  background: var(--cat-arts-bg);
+}
+
+.slot.pe {
+  background: var(--cat-pe-bg);
+}
+
+.slot.lang {
+  background: var(--cat-lang-bg);
+}
+
+.slot.other {
+  background: var(--cat-other-bg);
+}
+
+.slot.c6 {
+  background: var(--cat-c6-bg);
+}
+
+.slot.c7 {
+  background: var(--cat-c7-bg);
+}
 
 /* 🟢 もし「同じ授業が2コマ連続するときだけは、間のグレー線を消したい」場合は以下を追記 */
 /* .slot.has-course + .slot.has-course { border-top: none; } */
 
-.slot-top { display: flex; justify-content: space-between; align-items: flex-start; }
-.online-icon { font-size: 12px; color: var(--gray-400); line-height: 1; }
-.credits-badge { font-size: 11px; font-weight: 500; color: var(--text-muted); line-height: 1; }
+.slot-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.online-icon {
+  font-size: 12px;
+  color: var(--gray-400);
+  line-height: 1;
+}
+
+.credits-badge {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
 .course-name {
   font-size: 12px;
   font-weight: 500;
@@ -466,7 +621,12 @@ body {
   align-items: center;
   justify-content: center;
 }
-.instructor { font-size: 11px; color: var(--text-muted); text-align: center; }
+
+.instructor {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+}
 
 /* ─── ポップオーバー ─── */
 .popover {
@@ -479,9 +639,13 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   min-width: 155px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
-.popover.open { display: block; }
+
+.popover.open {
+  display: block;
+}
+
 .popover-header {
   display: flex;
   align-items: center;
@@ -492,6 +656,7 @@ body {
   font-weight: 500;
   color: var(--text-muted);
 }
+
 .popover-close {
   background: none;
   border: none;
@@ -502,8 +667,15 @@ body {
   padding: 0 2px;
   transition: color 0.1s;
 }
-.popover-close:hover { color: var(--text-main); }
-.popover-list { padding: 4px 0; }
+
+.popover-close:hover {
+  color: var(--text-main);
+}
+
+.popover-list {
+  padding: 4px 0;
+}
+
 .popover-item {
   padding: 7px 14px;
   font-size: 13px;
@@ -512,8 +684,14 @@ body {
   transition: background 0.1s;
   border-bottom: 1px solid var(--gray-50);
 }
-.popover-item:last-child { border-bottom: none; }
-.popover-item:hover { background: var(--gray-50); }
+
+.popover-item:last-child {
+  border-bottom: none;
+}
+
+.popover-item:hover {
+  background: var(--gray-50);
+}
 
 /* 右端カラムのポップオーバーは左に出す */
 .day-col:nth-last-child(-n+2) .popover {
@@ -522,8 +700,15 @@ body {
 }
 
 /* ─── 時間外授業 ─── */
-.extra-section { margin-bottom: 24px; }
-.section-label { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+.extra-section {
+  margin-bottom: 24px;
+}
+
+.section-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
 
 .extra-list {
   display: flex;
@@ -531,6 +716,7 @@ body {
   gap: 7px;
   margin-left: 28px;
 }
+
 .extra-row-item {
   display: flex;
   flex-direction: column;
@@ -538,6 +724,7 @@ body {
   gap: 6px;
   width: fit-content;
 }
+
 /* ─── 単位数表示 ─── */
 .credits-display {
   display: flex;
@@ -547,33 +734,61 @@ body {
   color: var(--text-muted);
   white-space: nowrap;
 }
+
 .credits-item strong {
   font-size: 18px;
   font-weight: 700;
   color: var(--text-main);
   transition: color 0.2s;
 }
+
 .credits-total strong {
   color: #e24b4a;
 }
+
 .credits-sep {
   color: var(--border);
 }
+
 @keyframes credits-flash {
-  0%   { color: #e24b4a; transform: scale(1) translateY(0); }
-  40%  { color: #e24b4a; transform: scale(1.25) translateY(-3px); }
-  100% { color: var(--text-main);     transform: scale(1) translateY(0); }
+  0% {
+    color: #e24b4a;
+    transform: scale(1) translateY(0);
+  }
+
+  40% {
+    color: #e24b4a;
+    transform: scale(1.25) translateY(-3px);
+  }
+
+  100% {
+    color: var(--text-main);
+    transform: scale(1) translateY(0);
+  }
 }
+
 .credits-item.flash strong {
   animation: credits-flash 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   display: inline-block;
 }
 
 @keyframes slot-pop-in {
-  0% { transform: scale(0.9) translateY(10px); opacity: 0; }
-  60% { transform: scale(1.02) translateY(-2px); opacity: 1; }
-  100% { transform: scale(1) translateY(0); opacity: 1; }
+  0% {
+    transform: scale(0.9) translateY(10px);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.02) translateY(-2px);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
 }
+
 .slot.just-added {
   animation: slot-pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   z-index: 10;
@@ -594,9 +809,22 @@ body {
   cursor: pointer;
   box-sizing: border-box;
 }
+
 /* 曜日スロットと同じ構造で上書き */
-.extra-card .slot-top { display: flex; justify-content: space-between; align-items: flex-start; }
-.extra-card .credits-badge { font-size: 11px; font-weight: 500; color: var(--text-muted); line-height: 1; position: static; }
+.extra-card .slot-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.extra-card .credits-badge {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  line-height: 1;
+  position: static;
+}
+
 .extra-card .course-name {
   font-size: 12px;
   font-weight: 500;
@@ -610,22 +838,50 @@ body {
   padding: 0;
   margin: 0;
 }
-.extra-card .instructor { font-size: 11px; color: var(--text-muted); text-align: center; display: block; margin-top: 0; }
+
+.extra-card .instructor {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  display: block;
+  margin-top: 0;
+}
 
 /* カテゴリ別背景色 */
-.extra-card.major { background: var(--cat-major-bg); }
-.extra-card.arts  { background: var(--cat-arts-bg);  }
-.extra-card.pe    { background: var(--cat-pe-bg);    }
-.extra-card.lang  { background: var(--cat-lang-bg);  }
-.extra-card.other { background: var(--cat-other-bg); }
-.extra-card.c6    { background: var(--cat-c6-bg);    }
-.extra-card.c7    { background: var(--cat-c7-bg);    }
+.extra-card.major {
+  background: var(--cat-major-bg);
+}
+
+.extra-card.arts {
+  background: var(--cat-arts-bg);
+}
+
+.extra-card.pe {
+  background: var(--cat-pe-bg);
+}
+
+.extra-card.lang {
+  background: var(--cat-lang-bg);
+}
+
+.extra-card.other {
+  background: var(--cat-other-bg);
+}
+
+.extra-card.c6 {
+  background: var(--cat-c6-bg);
+}
+
+.extra-card.c7 {
+  background: var(--cat-c7-bg);
+}
 
 .extra-add-row {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  position: relative; /* ★ポップオーバーの配置基準にするため追加 */
+  position: relative;
+  /* ★ポップオーバーの配置基準にするため追加 */
   width: fit-content;
 }
 
@@ -633,8 +889,9 @@ body {
   top: 0;
   left: calc(100% + 8px);
 }
-.extra-list > div:nth-child(5n+5) .popover,
-.extra-list > div:nth-child(5n+6) .popover {
+
+.extra-list>div:nth-child(5n+5) .popover,
+.extra-list>div:nth-child(5n+6) .popover {
   left: auto;
   right: calc(100% + 8px);
 }
@@ -654,18 +911,25 @@ body {
   transition: border-color 0.15s, color 0.15s;
   flex-shrink: 0;
 }
-.extra-add-btn:hover { border-color: var(--gray-400); color: var(--gray-400); }
+
+.extra-add-btn:hover {
+  border-color: var(--gray-400);
+  color: var(--gray-400);
+}
 
 /* ─── 確定ボタン ─── */
 .confirm-bar {
   position: fixed;
-  bottom: 0; left: 0; right: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   padding: 14px 28px;
   display: flex;
   justify-content: flex-end;
   pointer-events: none;
   z-index: 300;
 }
+
 .confirm-btn {
   background: var(--white);
   border: 2px solid var(--text-main);
@@ -682,19 +946,28 @@ body {
   opacity: 0;
   translate: 0 16px;
 }
+
 .confirm-btn.visible {
   pointer-events: auto;
   opacity: 1;
   translate: 0 0;
 }
-.confirm-btn:hover { box-shadow: 2px 2px 0 var(--text-main); transform: translate(2px,2px); }
-.confirm-btn:active { box-shadow: 0 0 0 var(--text-main); transform: translate(4px,4px); }
+
+.confirm-btn:hover {
+  box-shadow: 2px 2px 0 var(--text-main);
+  transform: translate(2px, 2px);
+}
+
+.confirm-btn:active {
+  box-shadow: 0 0 0 var(--text-main);
+  transform: translate(4px, 4px);
+}
 
 /* ─── シラバスモーダル ─── */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(44,44,42,0.35);
+  background: rgba(44, 44, 42, 0.35);
   z-index: 400;
   display: flex;
   align-items: center;
@@ -703,23 +976,25 @@ body {
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
+
 .modal-overlay.open {
   opacity: 1;
   pointer-events: auto;
 }
+
 .modal {
   background: var(--white);
   border-radius: var(--radius-lg);
   width: 340px;
   max-width: calc(100vw - 48px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14);
   overflow: hidden;
   translate: 0 24px;
   scale: 0.95;
   opacity: 0;
   transition: translate 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-              scale 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-              opacity 0.3s ease;
+    scale 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    opacity 0.3s ease;
   position: relative;
 }
 
@@ -737,10 +1012,13 @@ body {
   transition: color 0.15s;
   z-index: 10;
 }
-.modal-close-icon:hover { color: var(--text-main); }
 
-.modal-overlay.open .modal { 
-  translate: 0 0; 
+.modal-close-icon:hover {
+  color: var(--text-main);
+}
+
+.modal-overlay.open .modal {
+  translate: 0 0;
   scale: 1;
   opacity: 1;
 }
@@ -760,7 +1038,8 @@ body {
   height: 35px;
   cursor: pointer;
   position: relative;
-  z-index: 402; /* パネルより前面に出してクリック受付 */
+  z-index: 402;
+  /* パネルより前面に出してクリック受付 */
   margin: 2px 0;
 }
 
@@ -772,8 +1051,38 @@ body {
   pointer-events: none;
   background: transparent;
 }
+
 .lottie-panel-overlay.open {
   pointer-events: auto;
+}
+
+/* My時間割モーダル：通常モーダルと同じ見た目に上書き */
+#my-timetable-overlay {
+  background: rgba(44,44,42,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+#my-timetable-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+#my-timetable-modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  width: 400px;
+  max-width: calc(100vw - 48px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+  overflow: hidden;
+  translate: 0 12px;
+  transition: translate 0.22s cubic-bezier(0.34,1.56,0.64,1);
+  position: relative;
+}
+#my-timetable-overlay.open #my-timetable-modal {
+  translate: 0 0;
 }
 
 /* 調整ガイド：大枠パネル（#my-timetable-panel）のサイズと初期位置を調整する場所
@@ -783,11 +1092,14 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 650px;       /* 👈 【調整用】パネルの最大幅を変えたい場合はここ数値を変更 */
-  height: 565.65px;   /* 👈 【調整用】幅に合わせて高さを変更 (幅 × 0.8702) */
+  width: 650px;
+  /* 👈 【調整用】パネルの最大幅を変えたい場合はここ数値を変更 */
+  height: 565.65px;
+  /* 👈 【調整用】幅に合わせて高さを変更 (幅 × 0.8702) */
   pointer-events: none;
   z-index: 401;
-  opacity: 1; /* 常時表示（最初はヘッダーのボタンとして待機するため） */
+  opacity: 1;
+  /* 常時表示（最初はヘッダーのボタンとして待機するため） */
   transform-origin: top left;
   transition: transform 0.1s linear;
 }
@@ -798,7 +1110,8 @@ body {
 }
 
 .lottie-panel-root.open {
-  pointer-events: auto; /* 開いた時は全体をクリッカブルに */
+  pointer-events: auto;
+  /* 開いた時は全体をクリッカブルに */
 }
 
 /* ① Lottieキャンバス (pannel.json自体) */
@@ -809,7 +1122,8 @@ body {
   width: 100%;
   height: 100%;
   z-index: 1;
-  pointer-events: none; /* 👈 Lottieは背景装飾なので、クリックを邪魔しないように none 固定 */
+  pointer-events: none;
+  /* 👈 Lottieは背景装飾なので、クリックを邪魔しないように none 固定 */
 }
 
 .lottie-pannel-bg svg,
@@ -828,7 +1142,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 35px; /* 👈 左右のパディングを少し広げて、AEの線の内側に綺麗に文字が乗るように調整 */
+  padding: 0 35px;
+  /* 👈 左右のパディングを少し広げて、AEの線の内側に綺麗に文字が乗るように調整 */
   box-sizing: border-box;
 }
 
@@ -845,25 +1160,29 @@ body {
    Lottieパネルが画面中央に描画されるため、コンテナから大幅にpaddingを取って内側に文字を寄せています。 */
 .lottie-panel-content {
   position: relative;
-  z-index: 2; /* 👈 Lottie(z-index:1)の上に重ねる */
+  z-index: 2;
+  /* 👈 Lottie(z-index:1)の上に重ねる */
   width: 100%;
   height: 100%;
-  pointer-events: none; /* 初期状態ではクリック不可 */
-  
+  pointer-events: none;
+  /* 初期状態ではクリック不可 */
+
   /* 👈 【調整用】文字全体の位置を上下左右に動かしたい場合は、ここのpadding数値を微調整してください。
      上 120px, 左右 140px, 下(今回は未指定ですが必要に応じて) 取っています。
      例: padding: 130px 150px 0 150px; */
-  padding: 120px 140px; 
-  
+  padding: 120px 140px;
+
   display: flex;
   flex-direction: column;
   overflow: hidden;
   opacity: 0;
   transition: opacity 0.25s ease;
 }
+
 .lottie-panel-root.content-ready .lottie-panel-content {
   opacity: 1;
-  pointer-events: auto; /* 👈 開いた後は文字やボタンがクリック可能になるように auto 固定 */
+  pointer-events: auto;
+  /* 👈 開いた後は文字やボタンがクリック可能になるように auto 固定 */
 }
 
 .lottie-panel-header {
@@ -873,11 +1192,13 @@ body {
   margin-bottom: 6px;
   flex-shrink: 0;
 }
+
 .lottie-panel-title {
   font-size: 14px;
   font-weight: 700;
   color: var(--text-main);
 }
+
 .lottie-panel-close {
   background: none;
   border: none;
@@ -889,7 +1210,10 @@ body {
   transition: color 0.15s;
   font-family: inherit;
 }
-.lottie-panel-close:hover { color: var(--text-main); }
+
+.lottie-panel-close:hover {
+  color: var(--text-main);
+}
 
 .lottie-panel-desc {
   font-size: 11px;
@@ -909,8 +1233,15 @@ body {
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
 }
-.lottie-items-list::-webkit-scrollbar { width: 3px; }
-.lottie-items-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.lottie-items-list::-webkit-scrollbar {
+  width: 3px;
+}
+
+.lottie-items-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
 
 /* ─── 授業カード: Lottie枠線 + HTMLテキストの重ね合わせ ───
    class_item.json : 1169 × 266 px
@@ -920,7 +1251,7 @@ body {
 .lc-item {
   position: relative;
   /* 👈 【調整用】カードの横幅を変えたい場合 (現在は親要素に対して100%) */
-  width: 100%; 
+  width: 100%;
   /* 👈 【調整用】カードの縦幅を変えたい場合はアスペクト比かheightで調整します。
      class_item.jsonの実寸(1169x266)を維持するなら 1169 / 266 のままが綺麗です。
      もし任意の高さで固定したい場合は、 aspect-ratio を消して height: 90px; 等にしてください。 */
@@ -936,9 +1267,11 @@ body {
   width: 100%;
   height: 100%;
   z-index: 1;
-  pointer-events: none; /* 👈 Lottie枠線はクリックを邪魔しない背景装飾として none 固定 */
+  pointer-events: none;
+  /* 👈 Lottie枠線はクリックを邪魔しない背景装飾として none 固定 */
 }
-.lc-lottie > svg {
+
+.lc-lottie>svg {
   width: 100% !important;
   height: 100% !important;
   display: block;
@@ -948,21 +1281,24 @@ body {
 /* 調整ガイド：カード内の文字を右や左に寄せるための padding（内側余白）の場所 */
 .lc-text {
   position: relative;
-  z-index: 2; /* 👈 Lottie(z-index:1)の上に確実に文字を重ねる */
+  z-index: 2;
+  /* 👈 Lottie(z-index:1)の上に確実に文字を重ねる */
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  
+
   /* 👈 【調整用】Lottieの黒い線に文字が被らないよう、左右の余白をここで微調整します。
      例: padding: 0 30px; (上下は0、左右は30px開ける) */
-  padding: 0 20px; 
-  
+  padding: 0 20px;
+
   opacity: 0;
   transition: opacity 0.3s ease;
-  pointer-events: auto; /* 👈 文字やボタンはクリックできるように auto 固定 */
+  pointer-events: auto;
+  /* 👈 文字やボタンはクリックできるように auto 固定 */
 }
+
 .lc-item.text-visible .lc-text {
   opacity: 1;
 }
@@ -973,6 +1309,7 @@ body {
   gap: 1px;
   min-width: 0;
 }
+
 .lc-sem-badge {
   font-size: 9px;
   font-weight: 700;
@@ -983,6 +1320,7 @@ body {
   width: fit-content;
   margin-bottom: 1px;
 }
+
 .lc-name {
   font-size: 13px;
   font-weight: 700;
@@ -992,6 +1330,7 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .lc-meta {
   font-size: 10px;
   color: var(--text-muted);
@@ -1013,7 +1352,11 @@ body {
   transition: opacity 0.2s, background 0.15s;
   font-family: inherit;
 }
-.lc-add-btn:hover:not(:disabled) { opacity: 0.8; }
+
+.lc-add-btn:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
 .lc-add-btn:disabled {
   background: var(--gray-50);
   border-color: var(--border);
@@ -1022,8 +1365,14 @@ body {
   opacity: 1;
 }
 
-.modal-accent { height: 6px; width: 100%; }
-.modal-body { padding: 20px 22px 0; }
+.modal-accent {
+  height: 6px;
+  width: 100%;
+}
+
+.modal-body {
+  padding: 20px 22px 0;
+}
 
 .modal-course-name {
   font-size: 18px;
@@ -1031,17 +1380,20 @@ body {
   line-height: 1.3;
   margin-bottom: 4px;
 }
+
 .modal-instructor {
   font-size: 13px;
   color: var(--text-muted);
   margin-bottom: 14px;
 }
+
 .modal-tags {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
   margin-bottom: 14px;
 }
+
 .modal-tag {
   font-size: 11px;
   padding: 3px 9px;
@@ -1051,11 +1403,13 @@ body {
   color: var(--text-muted);
   border: 1px solid var(--border);
 }
+
 .modal-tag.online {
   background: #e6f1fb;
   color: #185fa5;
   border-color: #b5d4f4;
 }
+
 .modal-section-title {
   font-size: 11px;
   color: var(--text-muted);
@@ -1064,6 +1418,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
+
 .modal-overview {
   font-size: 13px;
   line-height: 1.7;
@@ -1073,10 +1428,12 @@ body {
   background: var(--gray-50);
   border-radius: var(--radius-sm);
 }
+
 .modal-actions {
   display: flex;
   border-top: 1px solid var(--border);
 }
+
 .modal-action-btn {
   flex: 1;
   padding: 14px;
@@ -1088,10 +1445,23 @@ body {
   font-weight: 500;
   transition: background 0.12s;
 }
-.modal-action-btn:hover { background: var(--gray-50); }
-.modal-action-btn.close-btn { color: var(--text-muted); border-right: 1px solid var(--border); }
-.modal-action-btn.delete-btn { color: #e24b4a; }
-.modal-action-btn.delete-btn:hover { background: #fcebeb; }
+
+.modal-action-btn:hover {
+  background: var(--gray-50);
+}
+
+.modal-action-btn.close-btn {
+  color: var(--text-muted);
+  border-right: 1px solid var(--border);
+}
+
+.modal-action-btn.delete-btn {
+  color: #e24b4a;
+}
+
+.modal-action-btn.delete-btn:hover {
+  background: #fcebeb;
+}
 
 /* ─── My時間割ボタン ─── */
 .my-timetable-btn {
@@ -1107,44 +1477,14 @@ body {
   color: var(--text-main);
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
+
 .my-timetable-btn:hover {
   background: var(--gray-50);
   transform: translateY(-1px);
 }
+
 .my-timetable-btn .icon {
   font-size: 14px;
-}
-
-/* ─── 古い .my-course-item 系は引き継ぎ保持少数參照向けに残す─── */
-.my-course-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--white);
-}
-.my-course-info { display: flex; flex-direction: column; gap: 4px; }
-.my-course-title { font-size: 14px; font-weight: 700; }
-.my-course-meta  { font-size: 11px; color: var(--text-muted); }
-.my-course-add-btn {
-  background: var(--cat-pe-bg);
-  border: 1px solid var(--cat-pe-bd);
-  color: #185fa5;
-  padding: 5px 12px;
-  border-radius: 14px;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-.my-course-add-btn:hover { opacity: 0.8; }
-.my-course-add-btn:disabled {
-  background: var(--gray-50);
-  border-color: var(--border);
-  color: var(--gray-400);
-  cursor: not-allowed;
 }
