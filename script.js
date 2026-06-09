@@ -748,7 +748,7 @@ function closeMyTimetableModal(e) {
       pannelAnim.goToAndStop(0, true);
     }
   }, 1200);
-}
+
 
 
 /* ─── My時間割から履修登録 ─── */
