@@ -795,4 +795,4 @@ function addFromMyTimetable(course, btn, itemEl) {
     if (typeof renderGrid === 'function') renderGrid();
   }
   if (typeof setChanged === 'function') setChanged();
-}
+}}
