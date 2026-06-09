@@ -734,22 +734,21 @@ function closeMyTimetableModal(e) {
   }
 
   // 同時に Lottie のアニメーションを逆再生（収縮）
-  const pannelAnim = lottieInstance; // 仮の参照
-  if (pannelAnim) {
-    pannelAnim.setDirection(-1);
-    pannelAnim.play();
+  const anim = pannelAnim;
+  if (anim) {
+    anim.setDirection(-1);
+    anim.play();
   }
 
   // アニメーション完了後（1.2s後）に状態を完全にリセット
   root.closeTimeout = setTimeout(() => {
     root.classList.remove('open', 'is-animating');
-    if (pannelAnim) {
-      pannelAnim.setDirection(1);
-      pannelAnim.goToAndStop(0, true);
+    if (anim) {
+      anim.setDirection(1);
+      anim.goToAndStop(0, true);
     }
   }, 1200);
-
-
+}
 
 /* ─── My時間割から履修登録 ─── */
 function addFromMyTimetable(course, btn, itemEl) {
@@ -795,4 +794,4 @@ function addFromMyTimetable(course, btn, itemEl) {
     if (typeof renderGrid === 'function') renderGrid();
   }
   if (typeof setChanged === 'function') setChanged();
-}}
+}
